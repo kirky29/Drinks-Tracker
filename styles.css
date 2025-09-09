@@ -996,6 +996,8 @@ h2 {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    width: 100%;
+    position: relative;
 }
 
 .login-container {
