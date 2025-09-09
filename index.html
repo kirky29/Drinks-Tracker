@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Drink Tracker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
@@ -10,6 +10,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Drink Tracker">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-tap-highlight" content="no">
 </head>
 <body>
     <!-- Login Page -->
@@ -40,13 +44,11 @@
         <header class="header">
             <div class="header-left">
                 <h1>Drink Tracker</h1>
-                <div class="current-datetime" id="currentDateTime"></div>
             </div>
             <div class="header-actions">
                 <button class="calendar-btn" id="calendarBtn">📅</button>
                 <button class="manage-btn" id="manageBtn">⚙️</button>
                 <button class="add-btn" id="addBtn">+</button>
-                <button class="logout-btn" id="logoutBtn">🚪</button>
             </div>
         </header>
 
@@ -220,6 +222,7 @@
                         <button class="add-new-item-btn" id="addNewItemBtn">Add New Item</button>
                         <button class="reset-items-btn" id="resetItemsBtn">Clear All Items</button>
                         <button class="clear-all-data-btn" id="clearAllDataBtn">Clear All Data</button>
+                        <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
                     </div>
                 </div>
             </div>

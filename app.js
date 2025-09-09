@@ -19,9 +19,137 @@ class DrinkTracker {
         this.loadQuickItems();
         this.updateQuickAddGrid();
         this.updateStats();
-        this.updateCurrentDateTime();
-        this.startDateTimeUpdater();
         this.setupDatePicker();
+        this.setupIOSFeatures();
+    }
+    
+    setupIOSFeatures() {
+        // Add iOS-style pull-to-refresh
+        this.setupPullToRefresh();
+        
+        // Add iOS-style momentum scrolling
+        this.setupMomentumScrolling();
+        
+        // Add iOS-style touch feedback
+        this.setupTouchFeedback();
+    }
+    
+    setupPullToRefresh() {
+        let startY = 0;
+        let currentY = 0;
+        let isRefreshing = false;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+            }
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (window.scrollY === 0 && !isRefreshing) {
+                currentY = e.touches[0].clientY;
+                const pullDistance = currentY - startY;
+                
+                if (pullDistance > 0 && pullDistance < 100) {
+                    // Add visual feedback for pull-to-refresh
+                    const pullIndicator = document.querySelector('.pull-indicator') || this.createPullIndicator();
+                    const opacity = Math.min(pullDistance / 100, 1);
+                    pullIndicator.style.opacity = opacity;
+                    pullIndicator.style.transform = `translateY(${pullDistance * 0.5}px)`;
+                }
+            }
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            if (window.scrollY === 0 && !isRefreshing) {
+                const pullDistance = currentY - startY;
+                
+                if (pullDistance > 80) {
+                    this.refreshData();
+                }
+                
+                // Reset pull indicator
+                const pullIndicator = document.querySelector('.pull-indicator');
+                if (pullIndicator) {
+                    pullIndicator.style.opacity = '0';
+                    pullIndicator.style.transform = 'translateY(0)';
+                }
+            }
+        });
+    }
+    
+    createPullIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'pull-indicator';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 122, 255, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        `;
+        indicator.textContent = 'Pull to refresh';
+        document.body.appendChild(indicator);
+        return indicator;
+    }
+    
+    async refreshData() {
+        const pullIndicator = document.querySelector('.pull-indicator');
+        if (pullIndicator) {
+            pullIndicator.textContent = 'Refreshing...';
+            pullIndicator.style.opacity = '1';
+        }
+        
+        // Refresh data
+        this.loadTodayLog();
+        this.loadQuickItems();
+        this.updateQuickAddGrid();
+        this.updateStats();
+        
+        // Add haptic feedback
+        if (navigator.vibrate) {
+            navigator.vibrate(20);
+        }
+        
+        setTimeout(() => {
+            if (pullIndicator) {
+                pullIndicator.textContent = '✓ Refreshed';
+                setTimeout(() => {
+                    pullIndicator.style.opacity = '0';
+                }, 1000);
+            }
+        }, 500);
+    }
+    
+    setupMomentumScrolling() {
+        // Enable momentum scrolling on iOS
+        const scrollableElements = document.querySelectorAll('.main-content, .modal-content, .manage-items');
+        scrollableElements.forEach(element => {
+            element.style.webkitOverflowScrolling = 'touch';
+            element.style.overscrollBehavior = 'contain';
+        });
+    }
+    
+    setupTouchFeedback() {
+        // Add touch feedback to all interactive elements
+        const interactiveElements = document.querySelectorAll('button, .quick-item, input, select');
+        interactiveElements.forEach(element => {
+            element.addEventListener('touchstart', () => {
+                element.style.transform = 'scale(0.95)';
+            });
+            
+            element.addEventListener('touchend', () => {
+                element.style.transform = 'scale(1)';
+            });
+        });
     }
 
     setupEventListeners() {
@@ -253,19 +381,50 @@ class DrinkTracker {
     }
 
     showAddAnimation() {
-        // Simple haptic feedback simulation
+        // iOS-style haptic feedback
         if (navigator.vibrate) {
-            navigator.vibrate(50);
+            navigator.vibrate(10); // Light haptic feedback
         }
         
-        // Visual feedback
+        // iOS-style visual feedback with bounce
         const quickItems = document.querySelectorAll('.quick-item');
         quickItems.forEach(item => {
-            item.style.transform = 'scale(0.95)';
+            item.style.animation = 'bounceIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
             setTimeout(() => {
-                item.style.transform = '';
-            }, 150);
+                item.style.animation = '';
+            }, 300);
         });
+        
+        // Add success feedback
+        this.showSuccessFeedback();
+    }
+    
+    showSuccessFeedback() {
+        // Create a temporary success indicator
+        const successIndicator = document.createElement('div');
+        successIndicator.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        `;
+        successIndicator.textContent = '✓ Added!';
+        document.body.appendChild(successIndicator);
+        
+        setTimeout(() => {
+            successIndicator.style.animation = 'fadeOut 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(successIndicator);
+            }, 300);
+        }, 1000);
     }
 
     saveTodayLog() {
@@ -364,36 +523,6 @@ class DrinkTracker {
         return timestamp.toLocaleTimeString('en-GB', options);
     }
 
-    updateCurrentDateTime() {
-        const now = new Date();
-        const dateOptions = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        const timeOptions = { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        };
-        
-        const dateStr = now.toLocaleDateString('en-GB', dateOptions);
-        const timeStr = now.toLocaleTimeString('en-GB', timeOptions);
-        
-        const datetimeElement = document.getElementById('currentDateTime');
-        if (datetimeElement) {
-            datetimeElement.textContent = `${dateStr} • ${timeStr}`;
-        }
-    }
-
-    startDateTimeUpdater() {
-        // Update every second
-        setInterval(() => {
-            this.updateCurrentDateTime();
-        }, 1000);
-    }
 
     // New robust features
     getDefaultItems() {
