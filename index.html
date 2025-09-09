@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drink Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007AFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Drink Tracker">
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-page" id="loginPage">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🍹 Drink Tracker</h1>
+                <p>Track your drinks and food consumption</p>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="emailInput">Email</label>
+                    <input type="email" id="emailInput" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" placeholder="Enter your password" required>
+                </div>
+                <button type="button" class="login-btn" id="loginBtn">Login</button>
+                <div class="login-error" id="loginError"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Drink Tracker</h1>
+                <div class="current-datetime" id="currentDateTime"></div>
+            </div>
+            <div class="header-actions">
+                <button class="calendar-btn" id="calendarBtn">📅</button>
+                <button class="manage-btn" id="manageBtn">⚙️</button>
+                <button class="add-btn" id="addBtn">+</button>
+                <button class="logout-btn" id="logoutBtn">🚪</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Category Filter -->
+            <section class="category-filter">
+                <div class="category-tabs">
+                    <button class="category-tab active" data-category="all">All</button>
+                    <button class="category-tab" data-category="drinks">Drinks</button>
+                    <button class="category-tab" data-category="food">Food</button>
+                    <button class="category-tab" data-category="custom">Custom</button>
+                </div>
+            </section>
+
+            <!-- Quick Add Section -->
+            <section class="quick-add" id="quickAddSection">
+                <h2>Quick Add</h2>
+                <div class="quick-add-grid" id="quickAddGrid">
+                    <!-- Items will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Date Filter -->
+            <section class="date-filter" id="dateFilterSection">
+                <div class="date-filter-controls">
+                    <button class="date-nav-btn" id="prevDayBtn">←</button>
+                    <input type="date" id="datePicker" class="date-picker" max="">
+                    <button class="date-nav-btn" id="nextDayBtn">→</button>
+                    <button class="today-btn" id="todayBtn">Today</button>
+                </div>
+                <div class="date-display" id="dateDisplay"></div>
+            </section>
+
+            <!-- Today's Log -->
+            <section class="today-log">
+                <h2 id="logSectionTitle">Today's Log</h2>
+                <div class="log-list" id="logList">
+                    <p class="empty-state">No items logged today</p>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="stats">
+                <h2>Today's Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalItems">0</span>
+                        <span class="stat-label">Total Items</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalVolume">0</span>
+                        <span class="stat-label">Total Volume (ml)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalCost">$0.00</span>
+                        <span class="stat-label">Total Cost</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="uniqueItems">0</span>
+                        <span class="stat-label">Unique Items</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Add Custom Item Modal -->
+        <div class="modal" id="addModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Custom Item</h3>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="customItemInput">Item Name</label>
+                        <input type="text" id="customItemInput" placeholder="Enter item name" maxlength="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categorySelect">Category</label>
+                        <select id="categorySelect">
+                            <option value="drinks">Drinks</option>
+                            <option value="food">Food</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="volumeInput">Volume</label>
+                            <input type="number" id="volumeInput" placeholder="0" min="0" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="unitSelect">Unit</label>
+                            <select id="unitSelect">
+                                <option value="ml">ml</option>
+                                <option value="l">litres</option>
+                                <option value="oz">oz</option>
+                                <option value="cup">cups</option>
+                                <option value="can">cans</option>
+                                <option value="bottle">bottles</option>
+                                <option value="piece">pieces</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priceInput">Price (£)</label>
+                        <input type="number" id="priceInput" placeholder="0.00" min="0" step="0.01">
+                    </div>
+                    
+                    <button class="add-custom-btn" id="addCustomBtn">Add Item</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Modal -->
+        <div class="modal" id="calendarModal">
+            <div class="modal-content calendar-modal">
+                <div class="modal-header">
+                    <h3>Calendar & Reports</h3>
+                    <button class="close-btn" id="closeCalendarModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="calendar-section">
+                        <div class="calendar-header">
+                            <button class="calendar-nav-btn" id="prevMonthBtn">←</button>
+                            <h4 id="calendarMonthYear"></h4>
+                            <button class="calendar-nav-btn" id="nextMonthBtn">→</button>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="reports-section">
+                        <h4>Reports</h4>
+                        <div class="report-controls">
+                            <div class="report-period">
+                                <label for="reportStartDate">From:</label>
+                                <input type="date" id="reportStartDate">
+                                <label for="reportEndDate">To:</label>
+                                <input type="date" id="reportEndDate">
+                            </div>
+                            <button class="generate-report-btn" id="generateReportBtn">Generate Report</button>
+                        </div>
+                        <div class="report-results" id="reportResults">
+                            <!-- Report results will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Items Modal -->
+        <div class="modal" id="manageModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Manage Items</h3>
+                    <button class="close-btn" id="closeManageModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="manage-section">
+                        <h4>Quick Add Items</h4>
+                        <div class="manage-items" id="manageItemsList">
+                            <!-- Items will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="manage-actions">
+                        <button class="add-new-item-btn" id="addNewItemBtn">Add New Item</button>
+                        <button class="reset-items-btn" id="resetItemsBtn">Clear All Items</button>
+                        <button class="clear-all-data-btn" id="clearAllDataBtn">Clear All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, Timestamp, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { firebaseConfig } from './firebase-config.js';
+
+        console.log('Firebase config loaded:', firebaseConfig);
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+
+            console.log('Firebase initialized successfully');
+            console.log('Database:', db);
+            console.log('Auth:', auth);
+
+            // Make Firebase available globally
+            window.db = db;
+            window.auth = auth;
+            window.addDoc = addDoc;
+            window.collection = collection;
+            window.query = query;
+            window.where = where;
+            window.orderBy = orderBy;
+            window.onSnapshot = onSnapshot;
+            window.Timestamp = Timestamp;
+            window.getDocs = getDocs;
+            window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+            window.signOut = signOut;
+            window.onAuthStateChanged = onAuthStateChanged;
+
+            console.log('Firebase functions made available globally');
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+        }
+    </script>
+    
+    <script src="app.js"></script>
+</body>
+</html>

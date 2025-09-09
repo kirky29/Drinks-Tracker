@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow users to read and write their own data
+    match /drinkLogs/{document} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Allow users to create new drink logs
+    match /drinkLogs/{document} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Allow users to read and write their own quick items
+    match /quickItems/{document} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Allow users to create new quick items
+    match /quickItems/{document} {
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}

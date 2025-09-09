@@ -1,0 +1,27 @@
+{
+  "name": "drink-tracker",
+  "version": "1.0.0",
+  "description": "Simple iOS web app for tracking drinks and foods",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build step needed for static files'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "drink-tracker",
+    "food-tracker",
+    "pwa",
+    "ios",
+    "firebase",
+    "mobile"
+  ],
+  "author": "Kirk",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
