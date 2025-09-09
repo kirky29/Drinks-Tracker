@@ -22,7 +22,7 @@ html {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #f8fafc;
+    background: #ffffff;
     min-height: 100vh;
     color: #1e293b;
     line-height: 1.6;
@@ -134,7 +134,7 @@ body {
     overscroll-behavior: contain;
     /* Add momentum scrolling */
     scroll-behavior: smooth;
-    background: #f8fafc;
+    background: #ffffff;
 }
 
 section {
@@ -993,7 +993,7 @@ h2 {
 /* Login Page */
 .login-page {
     min-height: 100vh;
-    background: #f8fafc;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
